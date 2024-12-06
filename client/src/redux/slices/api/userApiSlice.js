@@ -1,4 +1,36 @@
 import { apiSlice } from "../apiSlice";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+
+// Initial state
+const initialState = {
+    email: '',
+    notifications: [],
+};
+
+// Async thunk to fetch notifications (example)
+export const fetchNotifications = createAsyncThunk(
+    'user/fetchNotifications',
+    async () => {
+        const response = await fetch('/api/notifications'); // Modify with your API
+        return response.json();
+    }
+);
+
+// Redux slice for the user
+const userSlice = createSlice({
+    name: 'user',
+    initialState,
+    reducers: {
+        setEmail: (state, action) => {
+            state.email = action.payload;
+        },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(fetchNotifications.fulfilled, (state, action) => {
+            state.notifications = action.payload;
+        });
+    },
+});
 
 const USER_URL = "/user"
 
@@ -76,4 +108,8 @@ export const { useUpdateUserMutation,
     useGetNotificationQuery,
     useMarkNotiAsReadMutation,
     useChangePasswordMutation
-} = userApiSlice; 
+} = userApiSlice;
+
+export const { setEmail } = userSlice.actions;
+
+export default userSlice.reducer;

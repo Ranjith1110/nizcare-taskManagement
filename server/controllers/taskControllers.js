@@ -1,11 +1,35 @@
+import nodemailer from 'nodemailer';
 import Notice from "../models/notification.js";
 import Task from "../models/task.js";
 import User from "../models/user.js";
 
+// Function to send email using nodemailer
+const sendEmail = async (to, subject, text, htmlContent) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'muthukdm45@gmail.com',
+      pass: 'jyak xyuo bokg qrqf',
+    },
+  });
+
+  try {
+    await transporter.sendMail({
+      from: 'muthukdm45@gmail.com',
+      to,
+      subject,
+      text,
+      html: htmlContent,
+    });
+    console.log(`Email sent successfully to: ${to}`);
+  } catch (error) {
+    console.error(`Failed to send email to ${to}:`, error);
+  }
+};
+
 export const createTask = async (req, res) => {
   try {
     const { userId } = req.user;
-
     const { title, team, stage, date, priority, assets } = req.body;
 
     let text = "New task has been assigned to you";
@@ -15,9 +39,7 @@ export const createTask = async (req, res) => {
 
     text =
       text +
-      ` The task priority is set a ${priority} priority, so check and act accordingly. The task date is ${new Date(
-        date
-      ).toDateString()}. Thank you!!!`;
+      ` The task priority is set at ${priority} priority, so check and act accordingly. The task date is ${new Date(date).toDateString()}. Thank you!!!`;
 
     const activity = {
       type: "assigned",
@@ -41,11 +63,26 @@ export const createTask = async (req, res) => {
       task: task._id,
     });
 
+    // Fetch team members' emails and send email notifications
+    for (const userId of team) {
+      const user = await User.findById(userId);
+      if (user && user.email) {
+        const emailContent = `
+          <h3>New Task Assigned: ${title}</h3>
+          <p>${text}</p>
+          <p>Task Due Date: ${new Date(date).toDateString()}</p>
+        `;
+
+        // Send email to the user
+        await sendEmail(user.email, `Task Assigned: ${title}`, text, emailContent);
+      }
+    }
+
     res
       .status(200)
-      .json({ status: true, task, message: "Task created successfully." });
+      .json({ status: true, task, message: "Task assigned successfully." });
   } catch (error) {
-    console.log(error);
+    console.error('Error in creating task or sending emails:', error);
     return res.status(400).json({ status: false, message: error.message });
   }
 };
@@ -77,8 +114,7 @@ export const duplicateTask = async (req, res) => {
 
     text =
       text +
-      ` The task priority is set a ${
-        task.priority
+      ` The task priority is set a ${task.priority
       } priority, so check and act accordingly. The task date is ${task.date.toDateString()}. Thank you!!!`;
 
     await Notice.create({
@@ -99,27 +135,49 @@ export const duplicateTask = async (req, res) => {
 export const postTaskActivity = async (req, res) => {
   try {
     const { id } = req.params;
-    const { userId } = req.user;
+    const { userId } = req.user; // This assumes user is authenticated and the userId is available
     const { type, activity } = req.body;
 
-    const task = await Task.findById(id);
+    // Find the task by ID and populate the 'team' field to get user details
+    const task = await Task.findById(id).populate('team');
+    if (!task) {
+      return res.status(404).json({ status: false, message: "Task not found" });
+    }
 
+    // Prepare the activity data to push into the task
     const data = {
       type,
       activity,
       by: userId,
     };
 
+    // Push the activity to the task's activities array
     task.activities.push(data);
-
     await task.save();
 
-    res
-      .status(200)
-      .json({ status: true, message: "Activity posted successfully." });
+    // Ensure users are found (task.team should be populated)
+    if (!task.team.length) {
+      return res.status(404).json({ status: false, message: "No users found for this task" });
+    }
+
+    // Prepare the email content
+    const subject = "New Task Activity";
+    const text = `There is a new activity: ${activity}`;
+    const htmlContent = `<p>There is a new activity: ${activity}</p>`;
+
+    // Send email to all users assigned to the task
+    for (const user of task.team) {
+      if (user.email) { // Ensure the user has an email field
+        console.log(`Sending email to: ${user.email}`);
+        await sendEmail(user.email, subject, text, htmlContent); // Send email to each user
+      }
+    }
+
+    // Respond with success message
+    res.status(200).json({ status: true, message: "Activity posted successfully." });
   } catch (error) {
-    console.log(error);
-    return res.status(400).json({ status: false, message: error.message });
+    console.log("Error posting task activity:", error);
+    res.status(400).json({ status: false, message: error.message });
   }
 };
 
@@ -129,22 +187,22 @@ export const dashboardStatistics = async (req, res) => {
 
     const allTasks = isAdmin
       ? await Task.find({
-          isTrashed: false,
+        isTrashed: false,
+      })
+        .populate({
+          path: "team",
+          select: "name role title email",
         })
-          .populate({
-            path: "team",
-            select: "name role title email",
-          })
-          .sort({ _id: -1 })
+        .sort({ _id: -1 })
       : await Task.find({
-          isTrashed: false,
-          team: { $all: [userId] },
+        isTrashed: false,
+        team: { $all: [userId] },
+      })
+        .populate({
+          path: "team",
+          select: "name role title email",
         })
-          .populate({
-            path: "team",
-            select: "name role title email",
-          })
-          .sort({ _id: -1 });
+        .sort({ _id: -1 });
 
     const users = await User.find({ isActive: true })
       .select("name title role isAdmin createdAt")
@@ -200,29 +258,36 @@ export const dashboardStatistics = async (req, res) => {
 export const getTasks = async (req, res) => {
   try {
     const { stage, isTrashed } = req.query;
+    const { userId, isAdmin } = req.user;
 
-    let query = { isTrashed: isTrashed ? true : false };
+    // Define the base query
+    let query = { isTrashed: isTrashed === "true" };
+
+    // Admin sees all tasks; Users see only their tasks
+    if (!isAdmin) {
+      query.team = { $all: [userId] };
+    }
 
     if (stage) {
       query.stage = stage;
     }
 
-    let queryResult = Task.find(query)
+    // Fetch tasks based on the query
+    const tasks = await Task.find(query)
       .populate({
         path: "team",
         select: "name title email",
       })
       .sort({ _id: -1 });
 
-    const tasks = await queryResult;
-
+    // Respond with the tasks
     res.status(200).json({
       status: true,
       tasks,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(400).json({ status: false, message: error.message });
+    console.error(error);
+    res.status(400).json({ status: false, message: error.message });
   }
 };
 
@@ -254,7 +319,7 @@ export const createSubTask = async (req, res) => {
   try {
     const { title, tag, date } = req.body;
 
-    const {id} = req.params;
+    const { id } = req.params;
 
     const newSubTask = {
       title,
@@ -271,12 +336,12 @@ export const createSubTask = async (req, res) => {
     res
       .status(200)
       .json({ status: true, message: "SubTask added successfully." });
-      
+
   } catch (error) {
 
     console.log(error);
     return res.status(400).json({ status: false, message: error.message });
-    
+
   }
 };
 

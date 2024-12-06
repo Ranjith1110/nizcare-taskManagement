@@ -43,7 +43,7 @@ const isAdminRoute = (req, res, next) => {
       message: "Not authorized as admin. Try login as admin.",
     });
   }
-  
+
 };
 
 export { isAdminRoute, protectRoute };

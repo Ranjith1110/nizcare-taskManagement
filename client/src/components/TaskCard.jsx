@@ -87,7 +87,7 @@ const TaskCard = ({ task }) => {
         </div>
 
         {task?.subTasks?.length > 0 ? (
-          <div className='py-4 border-t border-gray-200'>
+          <div className='py-5 border-t border-gray-200'>
             <h5 className='text-base line-clamp-1 text-black'>
               {task?.subTasks[0].title}
             </h5>
@@ -104,7 +104,7 @@ const TaskCard = ({ task }) => {
         ) : (
           <>
             <div className='py-4 border-t border-gray-200'>
-              <span className='text-gray-500'>No Sub Task</span>
+              <span className='text-gray-500'>No More Task</span>
             </div>
           </>
         )}
@@ -115,7 +115,7 @@ const TaskCard = ({ task }) => {
             className='w-full flex gap-4 items-center text-sm text-gray-500 font-semibold disabled:cursor-not-allowed disabled::text-gray-300'
           >
             <IoMdAdd className='text-lg' />
-            <span>ADD SUBTASK</span>
+            <span>ADD MORE TASK</span>
           </button>
         </div>
       </div>

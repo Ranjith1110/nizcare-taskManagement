@@ -15,7 +15,7 @@ import { useGetAllTaskQuery } from "../redux/slices/api/taskApiSlice";
 
 
 const TABS = [
-  { title: "Board View", icon: <MdGridView /> },
+  // { title: "Board View", icon: <MdGridView /> },
   // { title: "List View", icon: <FaList /> },
 ];
 
@@ -71,19 +71,14 @@ const Tasks = () => {
           </div>
         )}
 
-        {selected !== 1 ? (
-          <BoardView tasks={data?.tasks} />
-        ) : (
-          <div className='w-full'>
-            <Table tasks={data?.tasks} />
-          </div>
-        )}
+        <BoardView tasks={data?.tasks} />
+
       </Tabs>
 
       <AddTask open={open} setOpen={setOpen} />
     </div>
   );
-  
+
 };
 
 export default Tasks;

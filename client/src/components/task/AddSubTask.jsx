@@ -7,6 +7,7 @@ import { useCreateSubTaskMutation } from "../../redux/slices/api/taskApiSlice";
 import { toast } from "sonner";
 
 const AddSubTask = ({ open, setOpen, id }) => {
+  
   const {
     register,
     handleSubmit,
@@ -48,11 +49,11 @@ const AddSubTask = ({ open, setOpen, id }) => {
             as='h2'
             className='text-base font-bold leading-6 text-gray-900 mb-4'
           >
-            ADD SUB-TASK
+            ADD MORE-TASK
           </Dialog.Title>
           <div className='mt-2 flex flex-col gap-6'>
             <Textbox
-              placeholder='Sub-Task title'
+              placeholder='Task title'
               type='text'
               name='title'
               label='Title'
@@ -69,7 +70,7 @@ const AddSubTask = ({ open, setOpen, id }) => {
                 placeholder='Date'
                 type='date'
                 name='date'
-                label='Task Date'
+                label='Due Date'
                 className='w-full rounded'
                 register={register("date", {
                   required: "Date is required!",
@@ -77,10 +78,10 @@ const AddSubTask = ({ open, setOpen, id }) => {
                 error={errors.date ? errors.date.message : ""}
               />
               <Textbox
-                placeholder='Tag'
+                placeholder='Sub-Title'
                 type='text'
                 name='tag'
-                label='Tag'
+                label='Sub-Title'
                 className='w-full rounded'
                 register={register("tag", {
                   required: "Tag is required!",

@@ -26,9 +26,9 @@ const UserAvatar = () => {
 
       toast.success("Logot Sucessfully", {
         style: {
-          backgroundColor: "#4caf50", 
-          color: "#fff",              
-          fontSize: "16px",            
+          backgroundColor: "#4caf50",
+          color: "#fff",
+          fontSize: "16px",
           padding: "10px"
         },
       });
@@ -42,7 +42,7 @@ const UserAvatar = () => {
       navigate("/log-in");
 
     } catch (error) {
-      
+
     }
   };
 

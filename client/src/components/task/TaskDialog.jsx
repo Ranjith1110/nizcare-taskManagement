@@ -69,7 +69,14 @@ const TaskDialog = ({ task }) => {
 
     } catch (error) {
       console.log(error);
-      toast.error(error?.data?.message || error.message);
+      toast.error("Not Authorized. Try login as Admin", {
+        style: {
+          backgroundColor: "#f44336",
+          color: "#fff",
+          fontSize: "16px",
+          padding: "10px"
+        },
+      });
     };
 
     setTimeout(() => {

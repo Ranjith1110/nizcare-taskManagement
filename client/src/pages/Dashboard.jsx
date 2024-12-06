@@ -10,7 +10,6 @@ import { LuClipboardEdit } from "react-icons/lu";
 import { FaNewspaper, FaUsers } from "react-icons/fa";
 import { FaArrowsToDot } from "react-icons/fa6";
 import moment from "moment";
-import { chartData1, chartData2, summary } from "../assets/data";
 import clsx from "clsx";
 import { Chart } from "../components/Chart";
 import { BGS, PRIOTITYSTYELS, TASK_TYPE, getInitials } from "../utils";
@@ -21,9 +20,9 @@ import { useGetDashboardStatsQuery } from "../redux/slices/api/taskApiSlice";
 
 const TaskTable = ({ tasks }) => {
   const ICONS = {
-    high: <MdKeyboardDoubleArrowUp />,
-    medium: <MdKeyboardArrowUp />,
-    low: <MdKeyboardArrowDown />,
+    High: <MdKeyboardDoubleArrowUp />,
+    Medium: <MdKeyboardArrowUp />,
+    Low: <MdKeyboardArrowDown />,
   };
 
   const TableHeader = () => (
@@ -170,7 +169,7 @@ const Dashboard = () => {
   const pieChartData = [
     { name: "Completed", total: totals?.completed || 0 },
     { name: "In Progress", total: totals?.["in progress"] || 0 },
-    { name: "Todo", total: totals?.todo || 0 },
+    { name: "To Do", total: totals?.todo || 0 },
   ];
 
   const stats = [
@@ -183,7 +182,7 @@ const Dashboard = () => {
     },
     {
       _id: "2",
-      label: "COMPLTED TASK",
+      label: "COMPLETED TASK",
       total: totals?.completed || 0,
       icon: <MdAdminPanelSettings />,
       bg: "bg-[#0f766e]",
@@ -197,7 +196,7 @@ const Dashboard = () => {
     },
     {
       _id: "4",
-      label: "TODOS",
+      label: "TO DO",
       total: totals?.todo || 0,
       icon: <FaArrowsToDot />,
       bg: "bg-[#be185d]",
@@ -237,12 +236,19 @@ const Dashboard = () => {
 
       <div className='w-full bg-white my-16 p-4 rounded shadow-sm'>
         <h4 className='text-xl text-gray-600 font-semibold'>
-          Pie Chart by Priority
+          Task Overview
         </h4>
-        <div className="flex">
+        <div className="md:flex">
+
           {/* Pass different datasets to each Chart */}
-          <Chart data={data?.graphData} />
-          <Chart data={pieChartData} />
+          <div className="md:w-1/2 p-4">
+            <Chart data={data?.graphData} />
+          </div>
+
+          <div className="md:w-1/2 p-4">
+            <Chart data={pieChartData} />
+          </div>
+
         </div>
       </div>
 

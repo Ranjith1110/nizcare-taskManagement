@@ -84,9 +84,9 @@ const AddTask = ({ open, setOpen, task }) => {
 
       toast.success(res.message, {
         style: {
-          backgroundColor: "#4caf50", 
-          color: "#fff",               
-          fontSize: "16px",            
+          backgroundColor: "#4caf50",
+          color: "#fff",
+          fontSize: "16px",
           padding: "10px"
         },
       });
@@ -180,7 +180,7 @@ const AddTask = ({ open, setOpen, task }) => {
                   placeholder='Date'
                   type='date'
                   name='date'
-                  label='Task Date'
+                  label='Due Date'
                   className='w-full rounded'
                   register={register("date", {
                     required: "Date is required!",
@@ -224,8 +224,8 @@ const AddTask = ({ open, setOpen, task }) => {
                 </span>
               ) : (
                 <Button
-                  label='Submit'
                   type='submit'
+                  label={isLoading ? "Loading..." : "Submit"}
                   className='bg-[#229ea6] px-8 text-sm font-semibold text-white sm:w-auto'
                 />
               )}

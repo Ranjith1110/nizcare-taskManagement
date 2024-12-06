@@ -64,7 +64,7 @@ export default function ConfirmatioDialog({
       </ModalWrapper>
     </>
   );
-  
+
 }
 
 export function UserAction({ open, setOpen, onClick = () => { } }) {

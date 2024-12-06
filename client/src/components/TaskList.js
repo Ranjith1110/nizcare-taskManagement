@@ -31,7 +31,7 @@ const TaskList = () => {
       <AddTask open={open} setOpen={setOpen} onAddTask={handleAddTask} />
     </div>
   );
-  
+
 };
 
 export default TaskList;

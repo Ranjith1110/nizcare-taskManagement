@@ -88,7 +88,19 @@ const Trash = () => {
 
     } catch (error) {
       console.log(error);
-      toast.error(error?.data?.message || error.error);
+      toast.error("Not Authorized. Try login as Admin", {
+        style: {
+          backgroundColor: "#f44336",
+          color: "#fff",
+          fontSize: "16px",
+          padding: "10px"
+        },
+      });
+      setTimeout(() => {
+        setOpenDialog(false);
+        window.location.reload();
+        refetch();
+      }, 1500);
     }
   }
 
@@ -173,7 +185,7 @@ const Trash = () => {
     <>
       <div className='w-full md:px-1 px-0 mb-6'>
         <div className='flex items-center justify-between mb-8'>
-          <Title title='Trashed Tasks' />
+          <Title title='Trash' />
 
           <div className='flex gap-2 md:gap-4 items-center'>
             <Button

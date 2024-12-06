@@ -3,9 +3,9 @@ import ModalWrapper from "./ModalWrapper";
 import { Dialog } from "@headlessui/react";
 import Button from "./Button";
 
-const ViewNotification = ({ open, setOpen, el}) => {
-    
-    return(
+const ViewNotification = ({ open, setOpen, el }) => {
+
+    return (
         <>
             <ModalWrapper open={open} setOpen={setOpen}>
                 <div className="py-4 w-full flex flex-col gap-4 items-center justify-center">

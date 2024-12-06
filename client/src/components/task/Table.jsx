@@ -41,9 +41,9 @@ const Table = ({ tasks }) => {
 
       toast.success(result?.message, {
         style: {
-          backgroundColor: "#4caf50", 
-          color: "#fff",               
-          fontSize: "16px",            
+          backgroundColor: "#4caf50",
+          color: "#fff",
+          fontSize: "16px",
           padding: "10px"
         },
       });

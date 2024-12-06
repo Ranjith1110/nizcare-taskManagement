@@ -16,7 +16,7 @@ const UserList = ({ setTeam, team }) => {
     setSelectedUsers(el);
     setTeam(el?.map((u) => u._id));
   };
-  
+
   useEffect(() => {
     if (team?.length < 1) {
       data && setSelectedUsers([data[0]]);
@@ -71,7 +71,7 @@ const UserList = ({ setTeam, team }) => {
                           selected ? "font-medium" : "font-normal"
                         )}
                       >
-                        <div className='w-6 h-6 rounded-full text-white flex items-center justify-center bg-violet-600'>
+                        <div className='w-6 h-6 rounded-full text-white flex items-center justify-center bg-[#229ea6]'>
                           <span className='text-center text-[10px]'>
                             {getInitials(user.name)}
                           </span>

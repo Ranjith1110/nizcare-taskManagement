@@ -58,7 +58,7 @@ const SelectList = ({ lists, selected, setSelected, label }) => {
       </Listbox>
     </div>
   );
-  
+
 };
 
 export default SelectList;

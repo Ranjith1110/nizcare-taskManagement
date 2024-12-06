@@ -8,7 +8,7 @@ import {
   Cell,
 } from "recharts";
 
-const COLORS = ['#229ea6', '#82ca9d', '#ffc658', '#8884d8', '#ff8042']; 
+const COLORS = ['#229ea6', '#82ca9d', '#ffc658', '#8884d8', '#ff8042'];
 
 export const Chart = ({ data }) => {
   return (

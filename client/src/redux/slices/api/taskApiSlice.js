@@ -86,7 +86,7 @@ export const taskApiSlice = apiSlice.injectEndpoints({
             query: ({ id, actionType }) => ({
                 url: `${TASKS_URL}/delete-restore/${id}?actionType=${actionType}`,
                 method: "DELETE",
-                credentials: "include",  // Fixed 'credentials' casing and spelling
+                credentials: "include",
             }),
         }),
 

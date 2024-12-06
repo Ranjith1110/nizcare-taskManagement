@@ -12,10 +12,10 @@ import { useUpdateUserMutation } from "../redux/slices/api/userApiSlice";
 import { setCredentials } from "../redux/slices/authSlice";
 
 const AddUser = ({ open, setOpen, userData }) => {
-  const { user } = useSelector((state) => state.auth); 
+  const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
-  const defaultValues = userData ?? {}; 
+  const defaultValues = userData ?? {};
   const {
     register,
     handleSubmit,
@@ -37,11 +37,11 @@ const AddUser = ({ open, setOpen, userData }) => {
 
         const result = await updateUser(data).unwrap();
         toast.success("User updated successfully", {
-          style: { 
-            backgroundColor: "#4caf50", 
-            color: "#fff", 
-            fontSize: "16px", 
-            padding: "10px" 
+          style: {
+            backgroundColor: "#4caf50",
+            color: "#fff",
+            fontSize: "16px",
+            padding: "10px"
           },
         });
 
@@ -50,7 +50,6 @@ const AddUser = ({ open, setOpen, userData }) => {
           window.location.reload();
         }, 1500);
 
-
         if (userData?._id === user._id) {
           dispatch(setCredentials({ ...result.user }));
         }
@@ -58,11 +57,11 @@ const AddUser = ({ open, setOpen, userData }) => {
 
         const result = await addNewUser({ ...data, password: data.password || data.email }).unwrap();
         toast.success("New user added successfully", {
-          style: { 
-            backgroundColor: "#4caf50", 
-            color: "#fff", 
-            fontSize: "16px", 
-            padding: "10px" 
+          style: {
+            backgroundColor: "#4caf50",
+            color: "#fff",
+            fontSize: "16px",
+            padding: "10px"
           },
         });
       }
@@ -91,26 +90,42 @@ const AddUser = ({ open, setOpen, userData }) => {
               type="text"
               name="name"
               label="Full Name"
-              className="w-full rounded"
+              className="w-full rounded text-gray-900"
               register={register("name", { required: "Full name is required!" })}
               error={errors.name ? errors.name.message : ""}
               readOnly={!user?.isAdmin}
             />
-            <Textbox
-              placeholder="Title"
-              type="text"
-              name="title"
-              label="Title"
-              className="w-full rounded"
-              register={register("title", { required: "Title is required!" })}
-              error={errors.title ? errors.title.message : ""}
-            />
+            <div className="w-full rounded">
+              <label className="block text-md font-medium text-gray-700" htmlFor="department">
+                Department
+              </label>
+              <select
+                id="department"
+                name="department"
+                {...register("title", { required: "Department is required!" })}
+                className={`w-full mt-2 bg-transparent px-3 py-2.5 2xl:py-3 border border-gray-300 placeholder-gray-400 text-gray-900 outline-none text-base focus:ring-2 ring-blue-300`}
+                register={register("title", { required: "Title is required!" })}
+                error={errors.title ? errors.title.message : ""}
+              >
+                <option value="">Select Department</option>
+                <option value="IT">IT</option>
+                <option value="BL">Business Lead</option>
+                <option value="Sales">Sales</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Networking">Networking</option>
+                <option value="Telecalling">Telecalling</option>
+                <option value="HR">HR</option>
+              </select>
+              {errors.title && (
+                <p className="mt-2 text-sm text-red-600">{errors.title.message}</p>
+              )}
+            </div>
             <Textbox
               placeholder="Role"
               type="text"
               name="role"
               label="Role"
-              className="w-full rounded"
+              className="w-full rounded text-gray-900"
               register={register("role", { required: "User role is required!" })}
               error={errors.role ? errors.role.message : ""}
             />
@@ -119,7 +134,7 @@ const AddUser = ({ open, setOpen, userData }) => {
               type="email"
               name="email"
               label="Email Address"
-              className="w-full rounded"
+              className="w-full rounded text-gray-900"
               register={register("email", { required: "Email address is required!" })}
               error={errors.email ? errors.email.message : ""}
             />
@@ -129,7 +144,7 @@ const AddUser = ({ open, setOpen, userData }) => {
                 type="password"
                 name="password"
                 label="Password"
-                className="w-full rounded"
+                className="w-full rounded text-gray-900"
                 register={register("password")}
                 error={errors.password ? errors.password.message : ""}
               />
@@ -158,7 +173,7 @@ const AddUser = ({ open, setOpen, userData }) => {
             </div>
           )}
         </form>
-      </ModalWrapper>
+      </ModalWrapper >
     </>
   );
 

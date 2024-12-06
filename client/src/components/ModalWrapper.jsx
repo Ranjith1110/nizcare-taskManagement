@@ -50,7 +50,7 @@ const ModalWrapper = ({ open, setOpen, children }) => {
       </Dialog>
     </Transition.Root>
   );
-  
+
 };
 
 export default ModalWrapper;

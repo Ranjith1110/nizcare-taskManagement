@@ -3,7 +3,7 @@ import React, { Fragment } from "react";
 import { getInitials } from "../utils";
 
 const UserInfo = ({ user }) => {
-  
+
   return (
     <div className='px-4'>
       <Popover className='relative'>

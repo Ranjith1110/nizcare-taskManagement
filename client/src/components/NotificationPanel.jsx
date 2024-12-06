@@ -18,7 +18,7 @@ const ICONS = {
 };
 
 const NotificationPanel = () => {
-  
+
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(null);
 
@@ -54,9 +54,9 @@ const NotificationPanel = () => {
       <Popover className='relative'>
         <Popover.Button className='inline-flex items-center outline-none'>
           <div className='w-8 h-8 flex items-center justify-center text-gray-800 relative'>
-            <IoIosNotificationsOutline className='text-2xl' />
+            <IoIosNotificationsOutline className='text-4xl flex items-center justify-center mt-5' />
             {data?.length > 0 && (
-              <span className='absolute text-center top-0 right-0.5 text-sm text-white font-semibold w-4 h-4 rounded-full bg-red-600'>
+              <span className='absolute text-center top-2 right-0.5 text-sm text-white font-semibold w-4 h-4 rounded-full bg-red-600'>
                 {data?.length}
               </span>
             )}

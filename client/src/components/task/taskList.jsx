@@ -4,8 +4,8 @@ import AddTask from "./AddTask";
 import Button from "../Button";
 
 const TaskList = () => {
-  const [tasks, setTasks] = useState([]); 
-  const [open, setOpen] = useState(false); 
+  const [tasks, setTasks] = useState([]);
+  const [open, setOpen] = useState(false);
 
   const handleAddTask = (newTask) => {
     setTasks((prevTasks) => [...prevTasks, newTask]);

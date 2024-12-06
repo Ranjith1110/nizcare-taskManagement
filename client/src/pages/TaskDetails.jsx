@@ -89,6 +89,8 @@ const TaskDetails = () => {
 
   const task = data?.task;
 
+  const assignedUsers = task?.team || [];
+
   if (isLoading)
     return (
       <div className="py-10">
@@ -142,16 +144,16 @@ const TaskDetails = () => {
                   <span className='text-gray-400'>|</span>
 
                   <div className='space-x-2'>
-                    <span className='font-semibold'>Sub-Task :</span>
+                    <span className='font-semibold'>More-Task :</span>
                     <span>{task?.subTasks?.length}</span>
                   </div>
                 </div>
 
-                <div className='space-y-4 py-6'>
+                <div className='space-y-4 py-3'>
                   <p className='text-gray-600 font-semibold test-sm'>
                     TASK TEAM
                   </p>
-                  <div className='space-y-3'>
+                  <div className='space-y-3 flex items-center gap-2'>
                     {task?.team?.map((m, index) => (
                       <div
                         key={index}
@@ -178,7 +180,7 @@ const TaskDetails = () => {
 
                 <div className='space-y-4 py-6'>
                   <p className='text-gray-500 font-semibold text-sm'>
-                    SUB-TASKS
+                    MORE-TASKS
                   </p>
                   <div className='space-y-8'>
                     {task?.subTasks?.map((el, index) => (
@@ -228,7 +230,17 @@ const TaskDetails = () => {
           </>
         )}
       </Tabs>
+      <div>
+      {/* Your Tabs and other details */}
+      <Activities
+        activity={task?.activities}
+        id={id}
+        refetch={refetch}
+        assignedUsers={assignedUsers}
+      />
     </div>
+    </div>
+    
   );
 };
 
@@ -236,7 +248,32 @@ const Activities = ({ activity, id, refetch }) => {
   const [selected, setSelected] = useState(act_types[0]);
   const [text, setText] = useState("");
 
+  const [mentionSuggestions, setMentionSuggestions] = useState([]);
+
   const [postActivity, { isLoading }] = usePostTaskActivityMutation();
+
+  const handleTextChange = (e) => {
+    const input = e.target.value;
+    setText(input);
+
+    // Check for "@" to suggest mentions
+    const match = input.match(/@(\w*)$/);
+    if (match) {
+      const query = match[1].toLowerCase();
+      const suggestions = assignedUsers.filter((user) =>
+        user.name.toLowerCase().startsWith(query)
+      );
+      setMentionSuggestions(suggestions);
+    } else {
+      setMentionSuggestions([]);
+    }
+  };
+
+  const addMention = (user) => {
+    const newText = text.replace(/@\w*$/, `@${user.name} `);
+    setText(newText);
+    setMentionSuggestions([]);
+  };
 
   const handleSubmit = async () => {
     try {
@@ -292,7 +329,7 @@ const Activities = ({ activity, id, refetch }) => {
         </div>
       </div>
     );
-    
+
   };
 
   return (
@@ -311,41 +348,38 @@ const Activities = ({ activity, id, refetch }) => {
         </div>
       </div>
 
-      <div className='w-full md:w-1/3'>
-        <h4 className='text-gray-600 font-semibold text-lg mb-5'>
-          Add Activity
-        </h4>
-        <div className='w-full flex flex-wrap gap-5'>
-          {act_types.map((item, index) => (
-            <div key={item} className='flex gap-2 items-center'>
-              <input
-                type='checkbox'
-                className='w-4 h-4'
-                checked={selected === item ? true : false}
-                onChange={(e) => setSelected(item)}
-              />
-              <p>{item}</p>
-            </div>
-          ))}
+      <div className="w-full md:w-1/3">
+        <h4 className="text-gray-600 font-semibold text-lg mb-5">Add Activity</h4>
+        <div className="flex flex-col gap-4">
           <textarea
-            rows={10}
+            rows={5}
             value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder='Type ......'
-            className='bg-white w-full mt-10 border border-gray-300 outline-none p-4 rounded-md focus:ring-2 ring-blue-500'
-          ></textarea>
-          {isLoading ? (
-            <Loading />
-          ) : (
-            <Button
-              type='button'
-              label='Submit'
-              onClick={handleSubmit}
-              className='bg-[#229ea6] text-white rounded'
-            />
+            onChange={handleTextChange}
+            placeholder="Type @ to mention a user..."
+            className="bg-white border border-gray-300 outline-none p-4 rounded-md focus:ring-2 ring-blue-500"
+          />
+          {mentionSuggestions.length > 0 && (
+            <ul className="border bg-white rounded shadow-md max-h-40 overflow-auto">
+              {mentionSuggestions.map((user) => (
+                <li
+                  key={user.id}
+                  className="p-2 hover:bg-gray-200 cursor-pointer"
+                  onClick={() => addMention(user)}
+                >
+                  {user.name}
+                </li>
+              ))}
+            </ul>
           )}
+          <Button
+            type="button"
+            label="Submit"
+            onClick={handleSubmit}
+            className="bg-[#229ea6] text-white rounded"
+          />
         </div>
       </div>
+
     </div>
   );
 

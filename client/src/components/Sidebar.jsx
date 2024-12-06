@@ -65,7 +65,7 @@ const Sidebar = () => {
   };
 
   const NavLink = ({ el }) => {
-    
+
     return (
       <Link
         to={el.link}
@@ -92,12 +92,12 @@ const Sidebar = () => {
         ))}
       </div>
 
-      <div className=''>
+      {/* <div className=''>
         <button className='w-full flex gap-2 p-2 items-center text-lg text-gray-800'>
           <MdSettings />
           <span>Settings</span>
         </button>
-      </div>
+      </div> */}
     </div>
   );
 
